@@ -13,7 +13,7 @@ Utility Commands
 \! cls
 mysqldump -u root -p --database library_db > C:\Dev\it30a-Mangkabong\backups\08162026_library_db.mysql
 
-mysqldump -u root -p --databases library_db  >C:\IT30A\IT30A\backups\%date:~-4%_%date:~4,2%_%date:~7,2%_%time:~0,2%_%time:~3,2%_%time:~6,2%_library_db.sql
+mysqldump -u root -p --databases library_db > "C:\IT30a\IT30A\backups\%date:~-4%_%date:~4,1%_%date:~6,2%_%time:~0,2%_%time:~3,2%_%time:~6,2%_library_db.sql"
 
 lab 2
 
@@ -22,3 +22,5 @@ lab 2
  )
  UPDATE students SET student_create_at = CURRENT_TIMESTAMP WHERE student_create_at IS NULL;
   ALTER TABLE students MODIFY COLUMN student_create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+  mysqldump -u root -p --databases library_db > "C:\IT30a\IT30A\backups\%date:~-4%_%date:~4,2%_%date:~7,2%_%time:~0,2%_%time:~3,2%_%time:~6,2%_library_db.sql"
