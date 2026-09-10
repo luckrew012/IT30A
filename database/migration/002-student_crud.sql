@@ -51,10 +51,8 @@ SET
     student_first_name = 'BENCHOT',
     student_last_name = 'MANGKABONG'
 WHERE
-    student_id = 1;
-
+    student_id = 1
 -- Books
-
 -- Books Query #1
 Select * from books;
 -- books Query #2 - Select books order by id ASC
