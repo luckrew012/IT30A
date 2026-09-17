@@ -6,7 +6,7 @@ $user='root';
 $pass='';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host; dbname=$db;charsey=$charset";
+$dsn = "mysql:host=$host; dbname=$db;charset=$charset";
 
 $options =[
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -24,11 +24,28 @@ try{
 session_start();
 
 // DETERMINe current section
-$section = $_GET['Section'] ?? 'students';
+$section = $_GET['section'] ?? 'students';
 
 // CRUD OP
 $actions = $_GET['action'] ?? '';
 
+//----------------------------------
+//students
+//----------------------------------
+
+//fetch
+if($section === 'students'){
+    $stmt = $pdo->query("
+    SELECT *
+    FROM students
+    ORDER by student_id DESC
+    
+    "
+
+    );
+
+    $students = $stmt ->fetchAll();
+}
 
 
 
@@ -48,8 +65,40 @@ $actions = $_GET['action'] ?? '';
         <a href="index.php?section=books">Books</a>
         <a href="index.php?section=borrow">Borrow</a>
 </nav>
+<h1>
+    Students
+</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Course</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+<tbody>
+<?php foreach($students as $student): ?>
+    <tr>
+            <td><?= htmlspecialchars($student['student_id']) ?></td>
+            <td><?= htmlspecialchars($student['student_first_name']) ?></td>
+            <td><?= htmlspecialchars($student['student_last_name']) ?></td>
+            <td><?= htmlspecialchars($student['student_course']) ?></td>
+            <td><?= htmlspecialchars($student['student_created_at']) ?></td>
+            <td>
+                <a>Edit</a>
+                <a>Delete</a>
+
+            </td>
+</tr>
+<?php endforeach ?>
+</tbody>
+</table>
+
 <?php if($section==='students'):?>
-<h1>Students<h1>
     <?php endif; ?>
     <?php if($section==='books'):?>
 <h1>Books<h1>
