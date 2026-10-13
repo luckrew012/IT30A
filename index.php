@@ -230,6 +230,10 @@ if($section==='books' && $action==='update'){
 
 
 // Borrow
+if ($section==='borrow' && $action==='create'){
+}
+
+
 
 
 // Fetch Borrow Records
@@ -344,10 +348,27 @@ if($section === 'borrow'){
         }
         
     }
+if ($section==='borrow' && $action==='return'){
 
+$borrowId = (int) ($_GET['id'] ?? 0);
+
+$stmt = $pdo->prepare("
+    UPDATE borrow
+    SET borrow_return_date = CURRENT_TIMESTAMP
+    WHERE borrow_id=?
+");
+$stmt -> execute([$borrowId]);
+$_SESSION['alert'] = 'Book returned successfully.';
+
+header("Location: index.php?section=borrow");
+    exit;
+
+}
 
 
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -701,8 +722,10 @@ if($section === 'borrow'){
                     <th>Student Name</th>
                     <th>Book Title</th>
                     <th>Book Author</th>
-                    <th>Created At</th>
-                    <th>Returned At</th>
+                    <th>Borrow Date</th>
+                    <th>Returned Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
 
@@ -744,6 +767,22 @@ if($section === 'borrow'){
 
                             <?php endif; ?>
                         </td>
+                        <td>
+                 <?php if ($borrow['borrow_return_date']): ?>
+                         Returned
+                <?php endif; ?>
+                      </td>
+
+                       <td>
+                  <?php if (!$borrow['borrow_return_date']): ?>
+                  <a
+                        href="index.php?section=borrow&action=return&id=<?= $borrow['borrow_id'] ?>"
+                          onclick="return confirm('Mark this book as returned');"
+                     >
+                         Return
+                  </a>
+             <?php endif; ?>
+                     </td>
 
                     </tr>
 
