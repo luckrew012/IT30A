@@ -5,7 +5,7 @@ Select * from books
 ORDER BY book_id ASC;
 -- books Query #3 - Select books order by id DESC
 Select * from books
-ORDER BY books_id DESC;
+ORDER BY book_id DESC;
 
 -- books Query #4 - Select books order by book_title ASC
     
@@ -15,7 +15,7 @@ Select
     book_category
 
 FROM books
-ORDER BY book_tile ASC;
+ORDER BY book_title ASC;
 
 -- books Query #5 - Select students order by book title DESC
 Select 
@@ -33,7 +33,7 @@ Select
     book_title
 
 FROM books
-ORDER BY book_tile ASC;
+ORDER BY book_title ASC;
 
 -- book Query #7 - Select book order by book category DESC
 Select 

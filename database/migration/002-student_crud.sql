@@ -16,7 +16,7 @@ FROM students
 ORDER BY student_last_name ASC;
 
 -- student Query #5 - Select students order by last_name DESC
-Select * from students
+Select 
     student_last_name,
     student_first_name
 FROM students
@@ -51,7 +51,7 @@ SET
     student_first_name = 'BENCHOT',
     student_last_name = 'MANGKABONG'
 WHERE
-    student_id = 1
+    student_id = 1;
 -- Books
 -- Books Query #1
 Select * from books;
