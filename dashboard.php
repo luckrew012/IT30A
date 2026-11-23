@@ -348,7 +348,6 @@ while ($row = $catStmt->fetch()) {
             purple: '#9c27b0',
             grey: '#9e9e9e'
         };
-
         // ---------- DOUGHNUT : BOOKS BY CATEGORY ----------
         const catCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(catCtx, {
@@ -403,5 +402,4 @@ while ($row = $catStmt->fetch()) {
         });
     })();
 </script>
-
 </html> 
