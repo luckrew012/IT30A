@@ -4,27 +4,22 @@ $db   = 'it30a_lab_db';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
-
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
-
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
 }
-
 // ---------- 1. KPI COUNTS ----------
 $studentCount  = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
 $bookCount     = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 $totalBorrows  = $pdo->query("SELECT COUNT(*) FROM borrow")->fetchColumn();
 $activeBorrows = $pdo->query("SELECT COUNT(*) FROM borrow WHERE borrow_return_date IS NULL")->fetchColumn();
-
 // ---------- 2. BOOKS BY CATEGORY ----------
 $catStmt = $pdo->query("
     SELECT book_category, COUNT(*) AS cnt
@@ -38,9 +33,7 @@ while ($row = $catStmt->fetch()) {
     $categories[]     = $row['book_category'];
     $categoryCounts[] = (int) $row['cnt'];
 }
-
 // ---------- 3. BORROW ACTIVITY LAST 7 DAYS ----------
-
 $dailyStmt = $pdo->query("
     SELECT DATE(borrow_date) AS day, COUNT(*) AS cnt
     FROM borrow
@@ -48,27 +41,19 @@ $dailyStmt = $pdo->query("
     GROUP BY DATE(borrow_date)
     ORDER BY day ASC
 ");
-
 $borrowByDay = [];
-
 while ($row = $dailyStmt->fetch()) {
     $borrowByDay[$row['day']] = (int) $row['cnt'];
 }
-
 // Generate labels and counts for the last 7 days
-
 $dayLabels = [];
 $dailyBorrows = [];
-
 for ($i = 6; $i >= 0; $i--) {
     $date = date('Y-m-d', strtotime("-$i days"));
-
     $dayLabels[] = date('D', strtotime($date));
     $dailyBorrows[] = $borrowByDay[$date] ?? 0;
 }
-
 // ---------- 4. RECENT BORROWS ----------
-
 $recentStmt = $pdo->query("
     SELECT
         s.student_first_name,
@@ -83,7 +68,6 @@ $recentStmt = $pdo->query("
 ");
 $recentBorrows = $recentStmt->fetchAll();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,9 +89,7 @@ $recentBorrows = $recentStmt->fetchAll();
             flex-direction: column;
             align-items: center;
         }
-        
         .dashboard { max-width: 1300px; width: 100%; }
-
         /* Materialize Standard Card */
         .stat-card, .chart-card, .recent-borrows {
             background: #ffffff;
@@ -122,8 +104,6 @@ $recentBorrows = $recentStmt->fetchAll();
                         0 1px 10px 0 rgba(0,0,0,0.12), 
                         0 2px 4px -1px rgba(0,0,0,0.3);
         }
-
-        /* ---- KPI CARDS ---- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -139,7 +119,6 @@ $recentBorrows = $recentStmt->fetchAll();
         .stat-card:nth-child(2) { border-top-color: #4caf50; } /* Green */
         .stat-card:nth-child(3) { border-top-color: #ff9800; } /* Orange */
         .stat-card:nth-child(4) { border-top-color: #f44336; } /* Red */
-
         .stat-header {
             display: flex;
             align-items: center;
@@ -168,8 +147,6 @@ $recentBorrows = $recentStmt->fetchAll();
             color: #9e9e9e; 
             margin-top: 0.3rem; 
         }
-
-        /* ---- CHARTS ---- */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -208,8 +185,6 @@ $recentBorrows = $recentStmt->fetchAll();
             height: auto !important; 
             max-height: 200px; 
         }
-
-        /* ---- RECENT BORROWS ---- */
         .recent-borrows {
             padding: 1.5rem;
         }
@@ -248,17 +223,14 @@ $recentBorrows = $recentStmt->fetchAll();
         .recent-header a .material-icons {
             font-size: 1rem;
         }
-
         .borrow-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0.8rem 0;
             border-bottom: 1px solid #eeeeee;
-            font-size: 0.95rem;
-        }
+            font-size: 0.95rem; }
         .borrow-row:last-child { border-bottom: none; }
-        
         .borrow-student {
             font-weight: 500;
             color: #424242;
@@ -282,8 +254,6 @@ $recentBorrows = $recentStmt->fetchAll();
             font-size: 1.1rem;
             color: #9e9e9e;
         }
-
-        /* Material Design Chips */
         .borrow-status {
             font-size: 0.75rem;
             padding: 0.3rem 0.8rem;
@@ -306,7 +276,6 @@ $recentBorrows = $recentStmt->fetchAll();
             background: #fff3e0; /* Orange 50 */
             color: #ef6c00;      /* Orange 800 */
         }
-
         .footer-note {
             margin-top: 2rem;
             text-align: center;
@@ -314,7 +283,6 @@ $recentBorrows = $recentStmt->fetchAll();
             color: #9e9e9e;
             letter-spacing: 0.5px;
         }
-
         @media (max-width: 760px) {
             .charts-grid { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -337,7 +305,6 @@ $recentBorrows = $recentStmt->fetchAll();
             <div class="stat-number"><?= $studentCount ?></div>
             <div class="stat-sub">enrolled</div>
         </div>
-
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-label">Books</span>
@@ -346,7 +313,6 @@ $recentBorrows = $recentStmt->fetchAll();
             <div class="stat-number"><?= $bookCount ?></div>
             <div class="stat-sub">in collection</div>
         </div>
-
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-label">Borrow records</span>
@@ -355,7 +321,6 @@ $recentBorrows = $recentStmt->fetchAll();
             <div class="stat-number"><?= $totalBorrows ?></div>
             <div class="stat-sub">all time</div>
         </div>
-
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-label">Active loans</span>
@@ -365,10 +330,7 @@ $recentBorrows = $recentStmt->fetchAll();
             <div class="stat-sub">not returned</div>
         </div>
     </div>
-        <!-- CHARTS -->
     <div class="charts-grid">
-
-        <!-- Pie Chart - Book Categories-->
         <div class="chart-card">
             <div class="chart-title">
                 Books by category
@@ -383,16 +345,13 @@ $recentBorrows = $recentStmt->fetchAll();
 <div class="chart-card">
     <div class="chart-title">
         Borrows · last 7 days
-
         <span>
             <span class="material-icons">trending_up</span>
             activity
         </span>
     </div>
-
     <canvas id="borrowChart" width="400" height="200"></canvas>
 </div>
-
     </div>
 </div>
 <!-- RECENT BORROWS -->
@@ -417,12 +376,10 @@ $recentBorrows = $recentStmt->fetchAll();
                 <div class="borrow-student">
                     <span class="material-icons">person</span>
                     <?= htmlspecialchars($row['student_first_name'] . ' ' . $row['student_last_name']) ?>
-                </div>
-                <div class="borrow-book">
+                </div> <div class="borrow-book">
                     <span class="material-icons">book</span>
                     <?= htmlspecialchars($row['book_title']) ?>
-                </div>
-                <div class="borrow-status <?= $row['borrow_return_date'] ? 'returned' : 'borrowed' ?>">
+                </div> <div class="borrow-status <?= $row['borrow_return_date'] ? 'returned' : 'borrowed' ?>">
                     <span class="material-icons">
                         <?= $row['borrow_return_date'] ? 'check_circle' : 'schedule' ?>
                     </span>
@@ -432,13 +389,8 @@ $recentBorrows = $recentStmt->fetchAll();
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-
-
 <script>
-
-    
     (function() {
-        // Materialize standard palette
         const colors = {
             blue: '#1976d2',
             green: '#4caf50',
@@ -447,8 +399,6 @@ $recentBorrows = $recentStmt->fetchAll();
             purple: '#9c27b0',
             grey: '#9e9e9e'
         };
-
-        // ---------- DOUGHNUT : BOOKS BY CATEGORY ----------
         const catCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(catCtx, {
             type: 'doughnut',
@@ -478,8 +428,7 @@ $recentBorrows = $recentStmt->fetchAll();
                             padding: 16,
                             font: { size: 12, family: 'Roboto' },
                             color: '#616161'
-                        }
-                    },
+                        }  },
                     tooltip: {
                         backgroundColor: '#212121',
                         titleColor: '#ffffff',
@@ -494,21 +443,12 @@ $recentBorrows = $recentStmt->fetchAll();
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                 const pct = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
                                 return `${label}: ${value} (${pct}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    // ---------- BAR: BORROWS LAST 7 DAYS ----------
-
+                            } }  } } }});
 const borrowCtx = document
     .getElementById('borrowChart')
     .getContext('2d');
-
 new Chart(borrowCtx, {
     type: 'bar',
-
     data: {
         labels: <?= json_encode($dayLabels) ?>,
 
@@ -517,51 +457,38 @@ new Chart(borrowCtx, {
             data: <?= json_encode($dailyBorrows) ?>,
             backgroundColor: colors.blue,
             borderRadius: 0, // Material flat bars are sharp
-
             barPercentage: 0.6,
             categoryPercentage: 0.8
-        }]
-    },
-
+        }]    },
     options: {
         responsive: true,
         maintainAspectRatio: true,
-
         plugins: {
             legend: {
                 display: false
             },
-
             tooltip: {
                 backgroundColor: '#212121',
                 titleColor: '#ffffff',
                 bodyColor: '#ffffff',
                 padding: 10,
                 cornerRadius: 4,
-
                 callbacks: {
-                    label: (ctx) => ` ${ctx.raw} borrows`
-                }
-            }
-        },
-
+                    label: (ctx) => ` ${ctx.raw} borrows` }
+            }   },
         scales: {
             y: {
                 beginAtZero: true,
                 grid: {
                     color: '#eeeeee',
-                    drawBorder: false
-                },
+                    drawBorder: false   },
                 ticks: {
                     stepSize: 1,
                     color: '#757575',
                     font: {
                         size: 11,
                         family: 'Roboto'
-                    }
-                }
-            },
-
+                    }     } },
             x: {
                 grid: {
                     display: false
@@ -577,14 +504,7 @@ new Chart(borrowCtx, {
         }
     }
 });
-
     })();
-
-    // ---------- BAR: BORROWS LAST 7 DAYS ----------
-
-
 </script>
-
-
 </body>
 </html>
