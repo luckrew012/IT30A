@@ -3,6 +3,7 @@ $currentSection = $_GET['section'] ?? 'dashboard';
 
 function navActive($section,$currentSection){
     return $section === $currentSection ? 'active' : '';
+    
 }
 
 ?>

@@ -364,6 +364,7 @@ while ($row = $catStmt->fetch()) {
                     hoverOffset: 4
                 }]
             },
+            
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
